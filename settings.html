@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Trello Card Print Settings</title>
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 16px; }
+    h2 { margin-top: 0; }
+    .group { margin-top: 12px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
+    #customFieldList { list-style: none; padding: 0; margin: 8px 0; }
+    #customFieldList li {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 4px;
+      border-radius: 4px;
+      cursor: move;
+      background: #000;
+      user-select: none;
+      display: flex;
+      align-items: center;
+    }
+    #customFieldList input[type="checkbox"] { margin-right: 8px; }
+    .buttons { margin-top: 16px; display: flex; gap: 10px; }
+    button {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      background: #0079bf;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover { background: #026aa7; }
+    .close-btn { background: #999; }
+    .close-btn:hover { background: #666; }
+  </style>
+</head>
+<body>
+  <h2>Print Card Options</h2>
+
+  <div class="group">
+    <strong>Custom Fields (drag to reorder)</strong>
+    <ul id="customFieldList">Loading…</ul>
+  </div>
+
+  <div class="buttons">
+    <button id="printBtn">Print</button>
+    <button id="closeBtn" class="close-btn">Close</button>
+  </div>
+
+  <script>
+    var t = window.TrelloPowerUp.iframe();
+
+    // Load board and card data
+    Promise.all([
+      t.board('customFields'),
+      t.card('customFieldItems','desc')
+    ]).then(([board, card]) => {
+      const container = document.getElementById('customFieldList');
+      container.innerHTML = '';
+
+      if(board.customFields && board.customFields.length) {
+        const cfMap = {};
+        board.customFields.forEach(cf => { cfMap[cf.id] = cf; });
+
+        // Sort fields by card.customFieldItems order, then remaining
+        const sortedFields = [];
+        card.customFieldItems.forEach(cfItem => {
+          if(cfMap[cfItem.idCustomField]) sortedFields.push(cfMap[cfItem.idCustomField]);
+        });
+        board.customFields.forEach(cf => {
+          if(!sortedFields.includes(cf)) sortedFields.push(cf);
+        });
+
+        // Render draggable list with checkboxes
+        sortedFields.forEach(cf => {
+          const li = document.createElement('li');
+          li.dataset.id = cf.id;
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.checked = true;
+
+          const label = document.createElement('span');
+          label.textContent = cf.name;
+
+          li.appendChild(checkbox);
+          li.appendChild(label);
+          container.appendChild(li);
+        });
+
+        new Sortable(container, { animation: 150 });
+      } else {
+        container.innerHTML = "<em>No custom fields on this board.</em>";
+      }
+    });
+
+    document.getElementById('printBtn').addEventListener('click', () => {
+      Promise.all([
+        t.card('name','desc','customFieldItems'),
+        t.board('customFields')
+      ]).then(([card, board]) => {
+        let html = `<h1>${card.name}</h1>`;
+
+        // Custom fields first, in user-defined order
+        const chosenLis = Array.from(document.querySelectorAll('#customFieldList li'));
+        const chosenIds = chosenLis.filter(li => li.querySelector('input').checked)
+                                   .map(li => li.dataset.id);
+
+        if(card.customFieldItems && card.customFieldItems.length && chosenIds.length) {
+          html += `<div class="custom-fields">`;
+          chosenIds.forEach(id => {
+            const def = board.customFields.find(f => f.id === id);
+            const cfItem = card.customFieldItems.find(f => f.idCustomField === id);
+            if(def && cfItem) {
+              let val = '';
+              if(cfItem.value) {
+                if(cfItem.value.text) val = cfItem.value.text;
+                if(cfItem.value.number) val = cfItem.value.number;
+                if(cfItem.value.checked) val = cfItem.value.checked === "true" ? "Yes" : "No";
+                if(cfItem.value.date) val = new Date(cfItem.value.date).toLocaleDateString();
+              } else if(cfItem.idValue && def.type === "list") {
+                const opt = def.options.find(o => o.id === cfItem.idValue);
+                val = opt ? opt.value.text : '';
+              }
+              if(val !== '') {
+                html += `<div class="custom-field"><strong>${def.name}:</strong> ${val}</div>`;
+              }
+            }
+          });
+          html += `</div>`;
+        }
+
+        // Always include Description after custom fields
+        html += `<h3>Notes</h3><div class="notes">` + marked.parse(card.desc) + `</div>`;
+
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        printWindow.document.write(`
+          <html>
+    <head>
+      <title>Print Card</title>
+      <link rel="stylesheet" type="text/css" href="print-reset.css">
+      <link rel="stylesheet" type="text/css" href="print.css">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    </head>
+    <body>
+    <div class="header"><img src="smmlogo-k-600.png" width:"200" height:"auto" />
+        <div class="header-contact">
+        <h2>34 Covert St, Cobourg, ON<br/>905-373-0983<br/>info@sewingmachinemagic.ca</h2>
+        </div>
+     </div>
+     <h2>Machine Service Report</h2>
+      ${html}
+      <script>
+        window.onload = function() { window.print(); };
+      <\/script>
+    </body>
+  </html>
+        `);
+        printWindow.document.close();
+      });
+    });
+
+    document.getElementById('closeBtn').addEventListener('click', () => {
+      t.closeModal();
+    });
+  </script>
+</body>
+</html>

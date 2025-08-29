@@ -1,0 +1,11 @@
+{
+  "name": "Print-Friendly Card Export",
+  "description": "Choose card details and export a clean, printable view (with custom fields inline).",
+  "author": "Ted",
+  "capabilities": [
+    "card-buttons"
+  ],
+  "icon": "https://cdn-icons-png.flaticon.com/512/60/60577.png",
+  "connectors": {},
+  "version": "1.2"
+}

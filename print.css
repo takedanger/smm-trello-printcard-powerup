@@ -1,0 +1,72 @@
+body {
+  font-family: "Figtree", sans-serif;
+  font-size: 16px;
+  margin: 30px;
+  line-height: 1.5;
+}
+
+.header {
+  margin-top: 40px;
+  height: 150px;
+  display: block;
+}
+
+.header img {
+  max-width: 300px;
+  float: left;
+  display: inline-block;
+  margin-right: 50px;
+}
+
+.notes {
+  border: 1px solid black;
+  padding: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 32px;
+  display: block;
+  padding: 10px 0 10px 0;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 21px;
+  text-transform: uppercase;
+  margin-top: 20px;
+}
+
+h4 {
+  font-size: 18px;
+}
+
+ul {
+  margin-left: 20px;
+}
+
+li {
+  margin: 4px 0;
+}
+
+strong {
+  font-weight: 600;
+}
+
+@media print {
+  button {
+    display: none;
+  }
+  body {
+    margin: 0;
+  }
+}
