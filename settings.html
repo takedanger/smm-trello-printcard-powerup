@@ -75,8 +75,11 @@
           if(!sortedFields.includes(cf)) sortedFields.push(cf);
         });
 
-// Check if a saved order exists
-t.get("board", "shared", "customFieldPrintOrder").then(savedOrder => {
+// Load any saved order + selected fields
+Promise.all([
+  t.get("board", "shared", "customFieldPrintOrder"),
+  t.get("board", "shared", "customFieldPrintSelected")
+]).then(([savedOrder, savedSelected]) => {
   if (savedOrder && savedOrder.length) {
     sortedFields.sort((a, b) => {
       const ai = savedOrder.indexOf(a.id);
@@ -92,7 +95,14 @@ t.get("board", "shared", "customFieldPrintOrder").then(savedOrder => {
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    checkbox.checked = true;
+    checkbox.checked = !savedSelected || savedSelected.includes(cf.id); // default = checked
+
+    checkbox.addEventListener("change", () => {
+      const selected = Array.from(container.querySelectorAll("li"))
+        .filter(li => li.querySelector("input").checked)
+        .map(li => li.dataset.id);
+      t.set("board", "shared", "customFieldPrintSelected", selected);
+    });
 
     const label = document.createElement('span');
     label.textContent = cf.name;
@@ -112,6 +122,7 @@ t.get("board", "shared", "customFieldPrintOrder").then(savedOrder => {
     }
   });
 });
+
 
       } else {
         container.innerHTML = "<em>No custom fields on this board.</em>";
