@@ -137,9 +137,14 @@ Promise.all([
         let html = `<h1>${card.name}</h1>`;
 
         // Custom fields first, in user-defined order
-        const chosenLis = Array.from(document.querySelectorAll('#customFieldList li'));
-        const chosenIds = chosenLis.filter(li => li.querySelector('input').checked)
-                                   .map(li => li.dataset.id);
+       const chosenLis = Array.from(document.querySelectorAll('#customFieldList li'));
+const chosenIds = chosenLis
+  .filter(li => li.querySelector("input").checked)
+  .map(li => li.dataset.id);
+
+// Save current selected state before printing
+t.set("board", "shared", "customFieldPrintSelected", chosenIds);
+
 
         if(card.customFieldItems && card.customFieldItems.length && chosenIds.length) {
           html += `<div class="custom-fields">`;
