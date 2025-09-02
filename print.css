@@ -20,13 +20,13 @@ body {
 
 .notes {
   border: 1px solid black;
-  padding: 15px 20px 15px 20px;
+  padding: 10px 20px 10px 20px;
   font-size: 14px;
 }
 
 .notes p {
   display: block;
-  margin: 5px 0px 5px 0;
+  margin: 10px 0px 10px 0;
 }
 
 h1, h2, h3, h4, h5, h6, strong {
