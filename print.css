@@ -33,6 +33,11 @@ body {
   text-decoration: underline;
 }
 
+em, i {
+  font-style: oblique;
+  font-style: italic;
+}
+
 h1, h2, h3, h4, h5, h6, strong, b {
   font-weight: 700;
 }
