@@ -5,39 +5,6 @@ body {
   line-height: 1.5;
 }
 
-.header {
-  margin-top: 40px;
-  height: 150px;
-  display: block;
-}
-
-.header img {
-  max-width: 300px;
-  float: left;
-  display: inline-block;
-  margin-right: 50px;
-}
-
-.notes {
-  border: 1px solid black;
-  padding: 10px 20px 10px 20px;
-  font-size: 14px;
-}
-
-.notes p {
-  display: block;
-  margin: 10px 0px 10px 0;
-}
-
-.notes p strong, .notes p b {
-  text-decoration: underline;
-}
-
-em, i {
-  font-style: oblique;
-  font-style: italic;
-}
-
 h1, h2, h3, h4, h5, h6, strong, b {
   font-weight: 700;
 }
@@ -53,6 +20,8 @@ h1 {
 
 h2 {
   font-size: 24px;
+  display: block;
+  margin-bottom: 0;
 }
 
 h3 {
@@ -73,8 +42,45 @@ li {
   margin: 4px 0;
 }
 
-strong {
-  font-weight: 600;
+strong, b {
+  font-weight: 700;
+}
+
+em, i {
+  font-style: oblique;
+  font-style: italic;
+}
+
+.header {
+  margin-top: 40px;
+  height: 150px;
+  display: block;
+}
+
+.header img {
+  max-width: 300px;
+  float: left;
+  display: inline-block;
+  margin-right: 50px;
+}
+
+.date {
+  margin-bottom: 20px;
+}
+
+.notes {
+  border: 1px solid black;
+  padding: 10px 20px 10px 20px;
+  font-size: 14px;
+}
+
+.notes p {
+  display: block;
+  margin: 10px 0px 10px 0;
+}
+
+.notes p strong, .notes p b {
+  text-decoration: underline;
 }
 
 @media print {
