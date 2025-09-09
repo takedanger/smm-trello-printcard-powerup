@@ -173,6 +173,14 @@ t.set("board", "shared", "customFieldPrintSelected", chosenIds);
         // Always include Description after custom fields
         html += `<h3>Notes</h3><div class="notes">` + marked.parse(card.desc) + `</div>`;
 
+        // Generate current date
+const today = new Date();
+const formattedDate = today.toLocaleDateString(undefined, {
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+});
+
         const printWindow = window.open('', '_blank', 'width=800,height=600');
         printWindow.document.write(`
           <html>
@@ -191,6 +199,7 @@ t.set("board", "shared", "customFieldPrintSelected", chosenIds);
         </div>
      </div>
      <h2>Machine Service Report</h2>
+<div class="date">Date: ${formattedDate}</div>
       ${html}
       <script>
         window.onload = function() { window.print(); };
