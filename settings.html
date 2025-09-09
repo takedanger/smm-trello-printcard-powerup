@@ -136,6 +136,14 @@ Promise.all([
       ]).then(([card, board]) => {
         let html = `<h1>${card.name}</h1>`;
 
+        // Generate current date
+const today = new Date();
+const formattedDate = today.toLocaleDateString(undefined, {
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+});
+
         // Custom fields first, in user-defined order
        const chosenLis = Array.from(document.querySelectorAll('#customFieldList li'));
 const chosenIds = chosenLis
@@ -172,14 +180,6 @@ t.set("board", "shared", "customFieldPrintSelected", chosenIds);
 
         // Always include Description after custom fields
         html += `<h3>Notes</h3><div class="notes">` + marked.parse(card.desc) + `</div>`;
-
-        // Generate current date
-const today = new Date();
-const formattedDate = today.toLocaleDateString(undefined, {
-  year: "numeric",
-  month: "long",
-  day: "numeric"
-});
 
         const printWindow = window.open('', '_blank', 'width=800,height=600');
         printWindow.document.write(`
