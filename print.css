@@ -59,7 +59,7 @@ em, i {
 .header img {
   max-width: 300px;
   float: left;
-  display: inline-block;
+  /* display: inline-block; */
   margin-right: 50px;
 }
 
